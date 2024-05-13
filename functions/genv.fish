@@ -3,11 +3,7 @@
 # =============================================================================
 
 function __genv_get_cmd --description="Returns the environment's Gradle binary"
-    echo -n "$gradle_env_dist_dir/bin/gradle"
-end
-
-function __genv_get_cmd_args --description="Returns the mandatory parameters of a Gradle execution"
-    echo -n "-Dgradle.user.home=$gradle_env_home_dir"
+    echo -n "$gradle_env_dist_dir/bin/gradle -Dgradle.user.home=$gradle_env_home_dir"
 end
 
 # =============================================================================
@@ -198,18 +194,18 @@ end
 # EXECUTION FUNCTIONS
 # =============================================================================
 
-function __genv_execute --argument cmd --description="Executes a Gradle run with the activated environment"
+function __genv_execute --description="Executes a Gradle run with the activated environment"
     if not set -q gradle_env
         echo "No environment is activated"
         return 1
     end
 
-    set -l gradle_cmd (__genv_get_cmd)
-    set -l gradle_cmd_args (__genv_get_cmd_args)
+    set -l gradle_cmd (__genv_get_cmd) "$argv"
+    # Puts all the other arguments incoming onto the args
 
     echo "============================================================================="
     __genv_print_info
-    echo "Command: $gradle_cmd $gradle_cmd_args $cmd"
+    echo "Command: $gradle_cmd "
     echo "============================================================================="
 
     set -l gradle_bin "$gradle_env_dist_dir/bin/gradle"
